@@ -1,0 +1,93 @@
+
+
+## prepration 
+
+```{r Stuff}
+# set seed for reproducability
+set.seed(999901)
+
+# set lambda to 0.4
+lambda <- 0.4
+
+# 40 samples
+n <- 40
+
+# 1000 simulations
+simulations <- 1000
+
+# simulate
+simulated_exponentials <- replicate(simulations, rexp(n, lambda))
+
+# calculate mean of exponentials
+means_exponentials <- apply(simulated_exponentials, 2, mean)
+```
+
+## Question 1
+Show where the distribution is centered at and compare it to the theoretical center of the distribution.
+
+```{r}
+analytical_mean <- mean(means_exponentials)
+analytical_mean
+```
+
+```{r}
+# analytical mean
+theory_mean <- 1/lambda
+theory_mean
+```
+
+```{r}
+# visualization
+hist(means_exponentials, xlab = "mean", main = "Exponential Function Simulations")
+abline(v = analytical_mean, col = "red")
+abline(v = theory_mean, col = "orange")
+```
+
+The analytics mean is 4.99 the theoretical mean 5. 
+
+## Question 2
+
+Show how variable it is and compare it to the theoretical variance of the distribution.. 
+
+```{r}
+# standard deviation of distribution
+standard_deviation_dist <- sd(means_exponentials)
+standard_deviation_dist
+```
+
+```{r}
+# standard deviation from analytical expression
+standard_deviation_theory <- (1/lambda)/sqrt(n)
+standard_deviation_theory
+```
+
+```{r}
+# variance of distribution
+variance_dist <- standard_deviation_dist^2
+variance_dist
+```
+
+```{r}
+# variance from analytical expression
+variance_theory <- ((1/lambda)*(1/sqrt(n)))^2
+variance_theory
+```
+
+Standard Deviation of the distribution is 0.79 with the theoretical SD calculated as 0.79. 
+
+## Question 3
+Show that the distribution is approximately normal.
+
+```{r}
+xfit <- seq(min(means_exponentials), max(means_exponentials), length=100)
+yfit <- dnorm(xfit, mean=1/lambda, sd=(1/lambda/sqrt(n)))
+hist(means_exponentials,breaks=n,prob=T,col="orange",xlab = "means",main="Density of means",ylab="density")
+lines(xfit, yfit, pch=22, col="black", lty=5)
+```
+
+```{r}
+# compare the distribution of averages of 40 exponentials to a normal distribution
+qqnorm(means_exponentials)
+qqline(means_exponentials, col = 2)
+```
+
